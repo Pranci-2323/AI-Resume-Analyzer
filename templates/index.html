@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Resume Analyzer</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <div class="icon">🤖</div>
+
+        <h1>AI Resume Analyzer</h1>
+
+        <p class="subtitle">
+            Analyze your resume and discover how well it matches your dream job.
+        </p>
+
+    </header>
+
+
+    <!-- UPLOAD SECTION -->
+
+    <section class="card upload-card">
+
+        <div class="section-title">
+            <span>📄</span>
+            <h2>Upload & Analyze</h2>
+        </div>
+
+        <p class="description">
+            Upload your resume and paste the job description to get an AI-powered analysis.
+        </p>
+
+        <form action="/analyze"
+              method="POST"
+              enctype="multipart/form-data">
+
+            <label for="resume">
+                Resume (PDF)
+            </label>
+
+            <input
+                type="file"
+                id="resume"
+                name="resume"
+                accept=".pdf"
+                required
+            >
+
+            <label for="job-description">
+                Job Description
+            </label>
+
+            <textarea
+                id="job-description"
+                name="job_description"
+                placeholder="Paste the job description here..."
+                rows="8"
+            ></textarea>
+
+            <button type="submit">
+                🔍 Analyze Resume
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- RESULTS -->
+
+    {% if resume_text %}
+
+    <main class="results">
+
+
+        <!-- RESUME TEXT -->
+
+        <section class="card">
+
+            <div class="section-title">
+                <span>✅</span>
+                <h2>Resume Successfully Analyzed</h2>
+            </div>
+
+            <p class="success-text">
+                Your PDF was successfully read and analyzed.
+            </p>
+
+            <h3>Extracted Resume Text</h3>
+
+            <div class="resume-text">
+                <pre>{{ resume_text }}</pre>
+            </div>
+
+        </section>
+
+
+        <!-- DETECTED SKILLS -->
+
+        <section class="card">
+
+            <div class="section-title">
+                <span>🧠</span>
+                <h2>Detected Skills</h2>
+            </div>
+
+            <div class="skills">
+
+                {% for skill in skills %}
+
+                <span class="skill">
+                    {{ skill }}
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- JOB REQUIRED SKILLS -->
+
+        {% if job_skills %}
+
+        <section class="card">
+
+            <div class="section-title">
+                <span>🎯</span>
+                <h2>Job Required Skills</h2>
+            </div>
+
+            <div class="skills">
+
+                {% for skill in job_skills %}
+
+                <span class="skill">
+                    {{ skill }}
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- ATS ANALYSIS -->
+
+        <section class="card">
+
+            <div class="section-title">
+                <span>📊</span>
+                <h2>Resume Analysis</h2>
+            </div>
+
+
+            <!-- ATS SCORE -->
+
+            <div class="score-box">
+
+                <h3>ATS Match Score</h3>
+
+                <div class="score">
+                    {{ match_percentage }}%
+                </div>
+
+            </div>
+
+
+            <!-- MATCHED SKILLS -->
+
+            <h3>✅ Matched Skills</h3>
+
+            <div class="skills">
+
+                {% for skill in matched_skills %}
+
+                <span class="skill">
+                    {{ skill }}
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- MISSING SKILLS -->
+
+            <h3>❌ Missing Skills</h3>
+
+            <div class="skills">
+
+                {% for skill in missing_skills %}
+
+                <span class="missing-skill">
+                    {{ skill }}
+                </span>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- ATS RECOMMENDATION -->
+
+            <h3>📌 ATS Recommendation</h3>
+
+            {% if match_percentage >= 80 %}
+
+            <p class="recommendation">
+                Excellent match! Your resume matches most
+                of the required skills for this job.
+            </p>
+
+            {% elif match_percentage >= 60 %}
+
+            <p class="recommendation">
+                Good match! Consider adding some of the
+                missing skills if you have experience with them.
+            </p>
+
+            {% else %}
+
+            <p class="recommendation">
+                Your resume needs improvement for this job.
+            </p>
+
+            {% endif %}
+
+        </section>
+
+
+        <!-- AI SUGGESTIONS -->
+
+        <section class="card">
+
+            <div class="section-title">
+                <span>🤖</span>
+                <h2>AI Resume Suggestions</h2>
+            </div>
+
+            <div class="ai-suggestions">
+
+                <p>
+                    {{ ai_suggestions }}
+                </p>
+
+            </div>
+
+        </section>
+
+
+        {% endif %}
+
+    </main>
+
+    {% endif %}
+
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            🤖 AI Resume Analyzer
+        </p>
+
+    </footer>
+
+
+</div>
+
+</body>
+
+</html>
